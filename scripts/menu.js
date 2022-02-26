@@ -18,71 +18,50 @@
  */
 
 /* Configuration of the menu */
-const ELEMENT_MENU_ELEMENTS_PER_ROW = 10;
-const PEN_SIZES = [1, 2, 4, 8, 16, 32, 64, 128, 256];
-const PEN_SIZE_LABELS = ["0.5px", "1px", "2px", "4px", "8px", "16px", "32px", "64px", "128px"];
-const DEFAULT_PEN_IDX = 2;
+const ELEMENT_MENU_ELEMENTS_PER_ROW = 4;
+const PEN_SIZES = [2, 4, 8, 16, 32, 64];
+const PEN_SIZE_LABELS = ["1px", "2px", "4px", "8px", "16px", "32px"];
+const DEFAULT_PEN_IDX = 1;
 
 /* Elements listed in the menu */
 // prettier-ignore
 const elementMenuItems = [
-  WALL, SAND, WATER, PLANT, FIRE, SPOUT, WELL, SALT, OIL, WAX, 
-  TORCH, ICE, GUNPOWDER, NAPALM, NITRO, C4, LAVA, CRYO, FUSE, MYSTERY,
-  CONCRETE, METHANE, SOIL, ACID, THERMITE, BURNING_THERMITE, BACKGROUND, CHARGED_NITRO, BRANCH, LEAF, 
-  POLLEN, SALT_WATER, STEAM, FALLING_WAX, ROCK, WET_SOIL, CHILLED_ICE, CORRUPT, FIREWORK, BEDROCK, 
-  SNOW, FIRE_CURSE, HUMAN, NANITES, SPICE, CLONE, FACTORY, THANOS, DEEPSAND
+  WALL, SAND, WATER, PLANT,
+  FIRE, SPOUT, WELL, SALT,
+  OIL, WAX, TORCH, ICE,
+  GUNPOWDER, NAPALM, NITRO, C4,
+  LAVA, CRYO, FUSE, MYSTERY,
+  CONCRETE, METHANE, SOIL, ACID,
+  THERMITE, BACKGROUND,
 ];
 
 const menuNames = {};
 menuNames[WALL] = "WALL";
-menuNames[BEDROCK] = "BEDROCK";
 menuNames[SAND] = "SAND";
-menuNames[SNOW] = "SNOW";
 menuNames[WATER] = "WATER";
-menuNames[SALT_WATER] = "SALT WATER";
-menuNames[STEAM] = "STEAM";
 menuNames[PLANT] = "PLANT";
-menuNames[BRANCH] = "BRANCH";
-menuNames[LEAF] = "LEAF";
-menuNames[POLLEN] = "POLLEN";
 menuNames[FIRE] = "FIRE";
-menuNames[FIRE_CURSE] = "CURSED FIRE";
 menuNames[SALT] = "SALT";
 menuNames[OIL] = "OIL";
 menuNames[SPOUT] = "SPOUT";
 menuNames[WELL] = "WELL";
 menuNames[TORCH] = "TORCH";
 menuNames[GUNPOWDER] = "GUNPOWDER";
-menuNames[FIREWORK] = "FIREWORK";
 menuNames[WAX] = "WAX";
-menuNames[FALLING_WAX] = "FALLING WAX";
 menuNames[NITRO] = "NITRO";
-menuNames[CHARGED_NITRO] = "CHARGED NITRO";
 menuNames[NAPALM] = "NAPALM";
 menuNames[C4] = "C-4";
 menuNames[CONCRETE] = "CONCRETE";
 menuNames[BACKGROUND] = "ERASER";
 menuNames[FUSE] = "FUSE";
 menuNames[ICE] = "ICE";
-menuNames[CHILLED_ICE] = "CRYO ICE";
 menuNames[LAVA] = "LAVA";
-menuNames[ROCK] = "ROCK";
 menuNames[METHANE] = "METHANE";
 menuNames[CRYO] = "CRYO";
-menuNames[CORRUPT] = "CORRUPT";
 menuNames[MYSTERY] = "???";
+menuNames[SOIL] = "SOIL";
 menuNames[ACID] = "ACID";
 menuNames[THERMITE] = "THERMITE";
-menuNames[BURNING_THERMITE] = "BURNING THERMITE";
-menuNames[SOIL] = "SOIL";
-menuNames[WET_SOIL] = "WET SOIL";
-menuNames[HUMAN] = "HUMANS";
-menuNames[THANOS] = "THANOS";
-menuNames[NANITES] = "NANITES";
-menuNames[SPICE] = "SPICE OF LIFE";
-menuNames[CLONE] = "REPRODUCTION";
-menuNames[FACTORY] = "PORTASPIGOT";
-menuNames[DEEPSAND] = "DEEPSAND";
 
 /*
  * Some element colors do not have very good contrast against
@@ -95,7 +74,6 @@ menuAltColors[WALL] = "rgb(160, 160, 160)";
 menuAltColors[BACKGROUND] = "rgb(200, 100, 200)";
 menuAltColors[WELL] = "rgb(158, 13, 33)";
 menuAltColors[SOIL] = "rgb(171, 110, 53)";
-menuAltColors[DEEPSAND] = "rgb(68, 72, 115)";
 
 function initMenu() {
   /* The wrapper div that holds the entire menu */
@@ -173,20 +151,17 @@ function initMenu() {
   });
 
   /* Set up spigot size options */
-  /*The 5th spigot's size is actually unecessary, since FACTORY always operates at a fixed rate, but it's needed by the function since it runs a check for both a type and a size.*/
   const spigotTypes = [
     document.getElementById("spigot1Type"),
     document.getElementById("spigot2Type"),
     document.getElementById("spigot3Type"),
     document.getElementById("spigot4Type"),
-    document.getElementById("spigot5Type"),
   ];
   const spigotSizes = [
     document.getElementById("spigot1Size"),
     document.getElementById("spigot2Size"),
     document.getElementById("spigot3Size"),
     document.getElementById("spigot4Size"),
-    document.getElementById("spigot5Size"),
   ];
   if (spigotTypes.length !== spigotSizes.length) throw "should be same length";
   for (i = 0; i < spigotTypes.length; i++) {
@@ -227,9 +202,6 @@ function initMenu() {
   spigotTypes[3].addEventListener("change", function () {
     SPIGOT_ELEMENTS[3] = parseInt(spigotTypes[3].value, 10);
   });
-  spigotTypes[4].addEventListener("change", function () {
-    SPIGOT_ELEMENTS[4] = parseInt(spigotTypes[4].value, 10);
-  });
   spigotSizes[0].addEventListener("change", function () {
     SPIGOT_SIZES[0] = parseInt(spigotSizes[0].value, 10);
   });
@@ -242,22 +214,12 @@ function initMenu() {
   spigotSizes[3].addEventListener("change", function () {
     SPIGOT_SIZES[3] = parseInt(spigotSizes[3].value, 10);
   });
-  spigotSizes[4].addEventListener("change", function () {
-    SPIGOT_SIZES[4] = parseInt(spigotSizes[4].value, 10);
-  });
 
   /* 'overwrite' checkbox */
   const overwriteCheckbox = document.getElementById("overwriteCheckbox");
   overwriteCheckbox.checked = OVERWRITE_ENABLED;
   overwriteCheckbox.addEventListener("click", function () {
     OVERWRITE_ENABLED = overwriteCheckbox.checked;
-  });
-
-  /* mating season checkbox*/
-  const seasonCheckbox = document.getElementById("seasonCheckbox");
-  seasonCheckbox.checked = MS_ENABLED;
-  seasonCheckbox.addEventListener("click", function () {
-    MS_ENABLED = seasonCheckbox.checked;
   });
 
   /* speed slider */
@@ -283,66 +245,6 @@ function initMenu() {
   /* load button */
   const loadButton = document.getElementById("loadButton");
   loadButton.onclick = loadGameCanvas;
-
-   /*Menu keybinds*/
-  document.addEventListener('keydown', function(m) {
-    /*z - Undo*/
-    if (m.which === 17) {
-      undoLoadGameCanvas();
-      aUndoLoadGameCanvas();
-    }
-
-    /*s - Defaut FPS*/
-    if (m.which === 83) {
-      speedSlider.value = DEFAULT_FPS;
-      setFPS(parseInt(speedSlider.value, 10));
-    }
-    /*d - Max FPS*/
-    else if (m.which === 68) {
-      speedSlider.value = MAX_FPS;
-      setFPS(parseInt(speedSlider.value, 10));
-    }
-    /*a - Min/0 FPS*/
-    else if (m.which === 65) {
-      speedSlider.value = 0;
-      setFPS(parseInt(speedSlider.value, 10));
-    }
-
-    /*c - Clear Canvas*/
-    if (m.which === 67) {
-      clearGameCanvas();
-    }
-    /*z - Save Canvas*/
-    else if (m.which === 90) {
-      saveGameCanvas();
-    }
-    /*x - Load Canvas*/
-    else if (m.which === 88) {
-      loadGameCanvas();
-    }
-
-    /*Space Bar - Overwrite Checkbox*/
-    if (m.which === 32) {
-      if (overwriteCheckbox.checked !== false) {
-        overwriteCheckbox.checked = false;
-        OVERWRITE_ENABLED = false;
-      } else {
-        overwriteCheckbox.checked = true;
-        OVERWRITE_ENABLED = true;
-      } 
-    }
-
-    /*f - Mating Season (MS) Checkbox*/
-    if (m.which === 70) {
-      if (seasonCheckbox.checked !== true) {
-        seasonCheckbox.checked = true;
-        MS_ENABLED = true;
-      } else {
-        seasonCheckbox.checked = false;
-        MS_ENABLED = false;
-      } 
-    }
-  });
 }
 
 function drawFPSLabel(fps) {
