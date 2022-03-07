@@ -117,6 +117,7 @@ const CHARGED_NITRO = __inGameColor(245, 98, 78);
 const ACID = __inGameColor(157, 240, 40);
 const THERMITE = __inGameColor(195, 140, 70);
 const BURNING_THERMITE = __inGameColor(255, 130, 130);
+const NANITES = __inGameColor(65, 138, 186);
 
 /*
  * It would be nice to combine the elements and elementActions
@@ -164,6 +165,7 @@ const elements = new Uint32Array([
   ACID,
   THERMITE,
   BURNING_THERMITE,
+  NANITES,
 ]);
 const elementActions = [
   BACKGROUND_ACTION,
@@ -203,6 +205,7 @@ const elementActions = [
   ACID_ACTION,
   THERMITE_ACTION,
   BURNING_THERMITE_ACTION,
+  NANITES_ACTION,
 ];
 Object.freeze(elementActions);
 
@@ -1192,6 +1195,42 @@ function BURNING_THERMITE_ACTION(x, y, i) {
   if (doDensitySink(x, y, i, WATER, false, 95)) return;
   if (doDensitySink(x, y, i, SALT_WATER, false, 95)) return;
   if (doDensitySink(x, y, i, OIL, false, 95)) return;
+}
+
+function NANITES_ACTION(x, y, i) {
+  /* Clones from a surrounding element. */
+  const xStart = Math.max(x - 1, 0);
+  const yStart = Math.max(y - 1, 0);
+  const xEnd = Math.min(x + 2, MAX_X_IDX + 1);
+  const yEnd = Math.min(y + 2, MAX_Y_IDX + 1);
+  var xIter, yIter;
+  for (yIter = yStart; yIter !== yEnd; yIter++) {
+    const idxBase = yIter * width;
+    for (xIter = xStart; xIter !== xEnd; xIter++) {
+      if (yIter === y && xIter === x) continue;
+
+      const idx = idxBase + xIter;
+      const borderingElem = gameImagedata32[idx];
+
+      if (borderingElem === NANITES) continue;
+
+      if (
+        borderingElem === BACKGROUND
+      ) {
+        gameImagedata32[idx] = BACKGROUND;
+      } else {
+        if (random() < 50) {
+          const nanLoc = borderingAdjacent(x, y, i, NANITES);
+          if (nanLoc !== -1) {
+            gameImagedata32[nanLoc] = borderingElem;
+            return;
+          } else {
+            gameImagedata32[i] = borderingElem;
+          }
+        }
+      }
+    }
+  }
 }
 
 /*  =============================== Helpers =============================== */
